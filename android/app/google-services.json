@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "237940706775",
+    "project_id": "saungthazin-94e83",
+    "storage_bucket": "saungthazin-94e83.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:237940706775:android:d1da5392c8b81f31f50f92",
+        "android_client_info": {
+          "package_name": "com.saungthazin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "237940706775-o8d4jevdj0739fvkdjrl5g8bviqrl4oq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAn18jm2_HXn_c57UYz_HYtcjrm3YHsXxM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "237940706775-o8d4jevdj0739fvkdjrl5g8bviqrl4oq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

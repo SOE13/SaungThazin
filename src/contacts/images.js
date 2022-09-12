@@ -27,6 +27,8 @@ export const images=(image)=>{
         return require('../../img/wave.jpg')
     }else if(image==='yoma'){
         return require('../../img/yoma.png')
+    }else if(image==='user'){
+        return require('../../img/user.png')
     }else{
         return require('../../img/all.png')
     }

@@ -4,11 +4,11 @@ import AntDesign from "react-native-vector-icons/AntDesign"
 import { useNavigation } from '@react-navigation/native'
 import { COLORS } from '../contacts/thems'
 
-const Header = ({children}) => {
+const Header = ({children,title}) => {
   const navigation=useNavigation()
   return (
     <View style={styles.container}>
-      <Text style={styles.logo}>Saung Thazin</Text>
+      <Text style={styles.logo}>{title}</Text>
       <View style={styles.iconContainer}>
         {children}
       </View>
