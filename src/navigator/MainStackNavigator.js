@@ -1,6 +1,6 @@
 import React from "react";
 import TabNavigator from "./TabNavigator";
-import { TransferCreateScreen, UserCreateScreen } from "../screen";
+import { TransferCreateScreen, UserAmountUpdateList, UserCreateScreen, UserEditScreen } from "../screen";
 import { createStackNavigator,TransitionPresets } from "@react-navigation/stack";
 
 const Stack=createStackNavigator();
@@ -14,10 +14,10 @@ const MainStackNavigator=({initialRoute="TabNavigatorScreen"})=>{
                 <Stack.Screen name="TransferCreateScreen" component={TransferCreateScreen} />
                 <Stack.Screen name="UserCreateScreen" component={UserCreateScreen}/>
             </Stack.Group>
-            {/* <Stack.Group screenOptions={{...TransitionPresets.SlideFromRightIOS}}>
-                <Stack.Screen name="DetailScreen" component={DetailScreen}/>
-                <Stack.Screen name="ImageScreen" component={ImageScreen}/>
-            </Stack.Group> */}
+            <Stack.Group screenOptions={{...TransitionPresets.SlideFromRightIOS}}>
+                <Stack.Screen name="UserAmountUpdateList" component={UserAmountUpdateList}/>
+                <Stack.Screen name="UserEditScreen" component={UserEditScreen}/>
+            </Stack.Group>
            
         </Stack.Navigator>
     )

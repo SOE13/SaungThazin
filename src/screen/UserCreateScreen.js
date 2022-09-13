@@ -66,13 +66,13 @@ const UserCreateScreen = ({navigation}) => {
 
       {imageUrl==''?
           <TouchableOpacity onPress={selectedImage} style={styles.formImage}>
-            <Image style={styles.image} source={images('user')} resizeMode="contain"/>
+            <Image style={styles.image} source={images('user')} resizeMode="stretch"/>
           </TouchableOpacity>
         :
         <TouchableOpacity onPress={selectedImage} style={styles.formImage}>
           <Image
           source={{uri:imageUrl}}
-          resizeMode={'contain'}
+          resizeMode={'stretch'}
           style={styles.image}
           />
         </TouchableOpacity>
@@ -131,10 +131,12 @@ const UserCreateScreen = ({navigation}) => {
       </View>
       
       <Button handleOnPress={handleOnPress} label={'Create'} 
-        isPrimary={true} style={{marginVertical:20,paddingVertical:10,marginBottom:20}}/>
+          isPrimary={true} style={{ marginVertical: 20, paddingVertical: 10, marginBottom: 20 }} />
+        
+      </SafeAreaView>
 
-        {loading == false && <Apploder />}
-        </SafeAreaView>
+      {loading == false && <Apploder />}
+      
     </ScrollView>
   )
 }

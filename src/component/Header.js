@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
         backgroundColor:COLORS.primary,
     },
     logo:{
-       fontSize:30,
+       fontSize:20,
        color:COLORS.white,
     },
     iconContainer:{
