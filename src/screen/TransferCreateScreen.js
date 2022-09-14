@@ -1,4 +1,4 @@
-import { Image, Modal, ScrollView, StyleSheet, Text, TextInput, ToastAndroid, TouchableOpacity, View } from 'react-native'
+import { Alert, Image, Modal, ScrollView, StyleSheet, Text, TextInput, ToastAndroid, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { COLORS } from '../contacts/thems'
 import Button from '../component/Button'
@@ -8,6 +8,7 @@ import { launchImageLibrary } from 'react-native-image-picker'
 import storage from '@react-native-firebase/storage';
 import Apploder from '../component/Apploder'
 import firestore from '@react-native-firebase/firestore'
+import { addNewTransition } from '../firebase/transitiondatabase'
 
 const TransferCreateScreen = ({ navigation }) => {
   
@@ -23,11 +24,11 @@ const TransferCreateScreen = ({ navigation }) => {
   const [option, setOption] = useState('')
   const [profit, setProfit] = useState(0)
   const [operator, setOperator] = useState('')
-  const [cradic, setCradic] = useState(true)
+  const [cradic, setCradic] = useState(false)
   const [formUser, setFromUser] = useState({})
   const [customer,setCustomer]=useState('')
-  const[fromAmount,setFromAmount]=useState('')
-  const [toAmount, settoAmount] = useState('')
+  const[fromAmount,setFromAmount]=useState(0)
+  const [toAmount, settoAmount] = useState(0)
   
   const[imageUrl,setImageUrl]=useState('')
 
@@ -35,10 +36,9 @@ const TransferCreateScreen = ({ navigation }) => {
      setLoading(true)
     firestore().collection('user').where('deleted','==',false)
       .get().then((querySnapshot) => {
-        console.log(querySnapshot)
           let temp=[]
           querySnapshot.forEach((doc) => {
-            temp.push(doc.data())
+            temp.push({id:doc.id,...doc.data()})
           })
         setUsers(temp)
         setLoading(false)
@@ -85,8 +85,63 @@ const TransferCreateScreen = ({ navigation }) => {
     cradicVisibleToggle()
   }
 
-  const handleOnPress = () => {
-    
+
+
+  const handleOnPress = async () => {
+    setLoading(false)
+    if (option === 'Cash Out') {
+      let imageUri = '';
+      if (description !== '' && option !== '' && Object.keys(formUser).length !== 0 &&
+    fromAmount!==0 && customer!=='' && toAmount!==0 &&operator!=='') {
+      if (imageUrl != "") {
+        const reference = storage().ref('/images/transfer/'+customer+fromAmount.accountNo);
+        await reference.putFile(imageUrl).then(()=>{
+          console.log("image uploaded")
+        })
+        let uri=reference.getDownloadURL().then((downloadURL)=>{
+          addNewTransition(description,option,formUser,fromAmount,customer,toAmount,profit,operator,cradic,downloadURL)
+          ToastAndroid.show("Done",ToastAndroid.SHORT)
+          setLoading(true)
+        })
+      }else{
+        addNewTransition(description,option,formUser,fromAmount,customer,toAmount,profit,operator,cradic,imageUri)
+        ToastAndroid.show("Done",ToastAndroid.SHORT)
+        setLoading(true)
+      } 
+      navigation.goBack()
+    } else {
+      Alert.alert("","Please fill All field !",[{text: "Okay",},])
+      setLoading(true)
+    }
+    } else {
+      if (formUser.amount > fromAmount) {
+      let imageUri = '';
+      if (description !== '' && option !== '' && Object.keys(formUser).length !== 0 &&
+    fromAmount!==0 && customer!=='' && toAmount!==0 &&operator!=='') {
+      if (imageUrl != "") {
+        const reference = storage().ref('/images/transfer/'+customer+fromAmount.accountNo);
+        await reference.putFile(imageUrl).then(()=>{
+          console.log("image uploaded")
+        })
+        let uri=reference.getDownloadURL().then((downloadURL)=>{
+          addNewTransition(description,option,formUser,fromAmount,customer,toAmount,profit,operator,cradic,downloadURL)
+          ToastAndroid.show("Done",ToastAndroid.SHORT)
+          setLoading(true)
+        })
+      }else{
+        addNewTransition(description,option,formUser,fromAmount,customer,toAmount,profit,operator,cradic,imageUri)
+        ToastAndroid.show("Done",ToastAndroid.SHORT)
+        setLoading(true)
+      } 
+      navigation.goBack()
+    } else {
+      Alert.alert("","Please fill All field !",[{text: "Okay",},])
+      setLoading(true)
+    }
+    } else {
+        Alert.alert("",'User Account does not have enoungt amount!',[{text: "Okay",},])
+    }
+    }
   }
   
   return (
@@ -261,6 +316,7 @@ const TransferCreateScreen = ({ navigation }) => {
             <Entypo name='circle-with-cross' size={30} color={COLORS.black} />
           </TouchableOpacity>
               <View style={{ width: '100%', alignContent: 'center' }}>
+                <ScrollView style={{marginBottom:45}}>
                 {users.map(((user,i) => {
                   return (
                     <TouchableOpacity key={i} style={styles.userItemContainer} onPress={() => selectFromuser(user)}>
@@ -287,6 +343,7 @@ const TransferCreateScreen = ({ navigation }) => {
             </TouchableOpacity>
                   )
                 }))}
+            </ScrollView>
           </View>
         </View>
       </View>
@@ -352,8 +409,8 @@ const TransferCreateScreen = ({ navigation }) => {
             <TouchableOpacity onPress={()=>selectCostomer('yoma')}>
               <Image style={styles.image} source={images('yoma')} resizeMode="contain"/>
             </TouchableOpacity>
-            <TouchableOpacity onPress={()=>selectCostomer('user')}>
-              <Image style={styles.image} source={images('user')} resizeMode="contain"/>
+            <TouchableOpacity onPress={()=>selectCostomer('cash')}>
+              <Image style={styles.image} source={images('cash')} resizeMode="contain"/>
             </TouchableOpacity>
           </View>
         </View>
@@ -403,6 +460,9 @@ const TransferCreateScreen = ({ navigation }) => {
             </TouchableOpacity>
             <TouchableOpacity style={styles.optionItem} onPress={()=>selectOption('Top Up')}>
               <Text style={{color:COLORS.black}}>Top Up</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.optionItem} onPress={()=>selectOption('Other')}>
+              <Text style={{color:COLORS.black}}>Other</Text>
             </TouchableOpacity>
           </View>
           

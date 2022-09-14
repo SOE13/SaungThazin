@@ -42,7 +42,7 @@ const UserCreateScreen = ({navigation}) => {
       } 
       navigation.goBack()
     } else {
-      Alert.alert("","Please All field",[{text: "Okay",},])
+      Alert.alert("","Please fill All field !",[{text: "Okay",},])
       setLoading(true)
     }
     
