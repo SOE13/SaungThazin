@@ -83,7 +83,7 @@ const UserAmountUpdateList = ({ navigation }) => {
         onRefresh={getAllTransfer}
         refreshing={refreshing}
         keyExtractor={item=>Math.random()}
-        renderItem={({ item }) => <UserList navigation={navigation} children={
+        renderItem={({ item }) => <UserList status={true} navigation={navigation} children={
           <Text style={{color:COLORS.black}}>
             {item.month} {item.day}, {item.year} {item.time}
           </Text>} item={item} />}

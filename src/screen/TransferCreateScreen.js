@@ -1,32 +1,54 @@
 import { Image, Modal, ScrollView, StyleSheet, Text, TextInput, ToastAndroid, TouchableOpacity, View } from 'react-native'
-import React, { useState } from 'react'
-import EvilIcons from 'react-native-vector-icons/EvilIcons'
+import React, { useEffect, useState } from 'react'
 import { COLORS } from '../contacts/thems'
 import Button from '../component/Button'
 import Entypo from 'react-native-vector-icons/Entypo'
 import { images } from '../contacts/images';
-import { addTransition } from '../database/database'
 import { launchImageLibrary } from 'react-native-image-picker'
 import storage from '@react-native-firebase/storage';
 import Apploder from '../component/Apploder'
+import firestore from '@react-native-firebase/firestore'
 
 const TransferCreateScreen = ({ navigation }) => {
   
-  const [fromVisible,setFromVisible]=useState(false)
+  const [fromVisible, setFromVisible] = useState(false)
+  const [toVisible,setToVisible]=useState(false)
   const [optionVisible, setOptionVisible] = useState(false)
   const [cradicVisible, setCradicVisible] = useState(false)
-  const [activeInput,setActiveInput]=useState(null);
+  const [activeInput, setActiveInput] = useState(null)
+  const [loading,setLoading]=useState(false)
+  const [users, setUsers] = useState([])
   
   const [description, setDescription] = useState('')
   const [option, setOption] = useState('')
   const [profit, setProfit] = useState(0)
   const [operator, setOperator] = useState('')
-  const [cradic,setCradic]=useState(true)
+  const [cradic, setCradic] = useState(true)
+  const [formUser, setFromUser] = useState({})
+  const [customer,setCustomer]=useState('')
   const[fromAmount,setFromAmount]=useState('')
   const [toAmount, settoAmount] = useState('')
   
   const[imageUrl,setImageUrl]=useState('')
-  const [loading, setLoading] = useState(true)
+
+  const getAllUser = async () => {
+     setLoading(true)
+    firestore().collection('user').where('deleted','==',false)
+      .get().then((querySnapshot) => {
+        console.log(querySnapshot)
+          let temp=[]
+          querySnapshot.forEach((doc) => {
+            temp.push(doc.data())
+          })
+        setUsers(temp)
+        setLoading(false)
+      }, e => {console.log(e)})
+  }
+  
+
+  useEffect(() => {
+    getAllUser()
+  },[])
 
   const selectedImage=()=>{
       launchImageLibrary(
@@ -37,6 +59,18 @@ const TransferCreateScreen = ({ navigation }) => {
           }
         }
       )
+  }
+
+  const fromVisibleToggle = () => { setFromVisible(!fromVisible) }
+  const selectFromuser = (value) => {
+    setFromUser(value)
+    fromVisibleToggle()
+  }
+
+  const toVisibleToggle = () => { setToVisible(!toVisible) }
+  const selectCostomer = (value) => {
+    setCustomer(value)
+    toVisibleToggle()
   }
 
   const optionVisibleToggle = () => { setOptionVisible(!optionVisible) }
@@ -70,20 +104,88 @@ const TransferCreateScreen = ({ navigation }) => {
             padding:10,
             backgroundColor:COLORS.white,
             borderRadius:5,
-            paddingVertical:10,
+            paddingVertical:5,
             borderWidth:1,
             borderColor: activeInput == 'description' ? COLORS.primary : COLORS.white,
           }} />
       </View>
       <View style={styles.formGroup}>
           <Text style={styles.formLabel}>Option</Text>
-        {option === '' ? < TouchableOpacity onPress={optionVisibleToggle} style={styles.option} /> : 
+        {option === '' ? < TouchableOpacity onPress={optionVisibleToggle} style={styles.option}>
+          <Text style={{ color:'#919191' }}>Option</Text>
+        </TouchableOpacity>
+          : 
         <TouchableOpacity style={styles.optionItem} onPress={optionVisibleToggle}>
             <Text style={{ color: COLORS.black }}>{ option}</Text>
         </TouchableOpacity>
         }
       </View>
-      {/* //form amount and to amount */}
+
+      <View style={{...styles.formGroup,flex:1,flexDirection:'row'}}>
+        <View style={{ flex: 1, paddingHorizontal: 10 }}>
+          {Object.keys(formUser).length === 0 ? <Text style={styles.formLabel}>User</Text> :
+            <Text style={styles.formLabel}>{ formUser.account}</Text>}
+          {Object.keys(formUser).length===0 ? <TouchableOpacity onPress={fromVisibleToggle} >
+              <Image style={styles.userItem} source={images('user')} resizeMode="stretch" />
+          </TouchableOpacity>: 
+            <TouchableOpacity onPress={fromVisibleToggle}>
+              {formUser.imageUri === '' ? <Image style={styles.userItem} source={images('user')} resizeMode="stretch" /> :
+              <Image resizeMode='stretch' style={styles.userItem} source={{ uri: formUser.imageUri }} />
+              }
+        </TouchableOpacity>
+        }
+        </View>
+        <View style={{flex:3}}>
+          <Text style={styles.formLabel}>Amount</Text>
+          <TextInput onFocus={()=>setActiveInput('fromAmount')}
+           value={fromAmount}
+           keyboardType={'number-pad'}
+           placeholder='Amount'
+           onChangeText={(value)=>setFromAmount(value)}
+          style={{
+            color:COLORS.black,
+            padding:10,
+            backgroundColor:COLORS.white,
+            borderRadius:5,
+            paddingVertical:8,
+            borderWidth:1,
+            borderColor: activeInput == 'fromAmount' ? COLORS.primary : COLORS.white,
+            textAlign:'right'
+          }} />
+        </View>
+      </View>
+      {/* to amount */}
+      
+      <View style={{...styles.formGroup,flex:1,flexDirection:'row'}}>
+        <View style={{ flex: 1, paddingHorizontal: 10 }}>
+          <Text style={styles.formLabel}>Customer</Text>
+          
+          <TouchableOpacity onPress={toVisibleToggle} >
+            {customer === '' ?
+              <Image style={styles.userItem} source={images('user')} resizeMode="stretch" /> :
+              <Image style={styles.userItem} source={images(customer)} resizeMode="stretch" />
+            }
+          </TouchableOpacity>
+        </View>
+        <View style={{flex:3}}>
+          <Text style={styles.formLabel}>Amount</Text>
+          <TextInput onFocus={()=>setActiveInput('toAmount')}
+           value={toAmount}
+           keyboardType={'number-pad'}
+           placeholder='Amount'
+           onChangeText={(value)=>settoAmount(value)}
+          style={{
+            color:COLORS.black,
+            padding:10,
+            backgroundColor:COLORS.white,
+            borderRadius:5,
+            paddingVertical:8,
+            borderWidth:1,
+            borderColor: activeInput == 'toAmount' ? COLORS.primary : COLORS.white,
+            textAlign:'right'
+          }} />
+        </View>
+      </View>      
 
       <View style={styles.formGroup}>
           <Text style={styles.formLabel}>Profit</Text>
@@ -97,7 +199,7 @@ const TransferCreateScreen = ({ navigation }) => {
             padding:10,
             backgroundColor:COLORS.white,
             borderRadius:5,
-            paddingVertical:10,
+            paddingVertical:5,
             borderWidth:1,
             borderColor: activeInput == 'profit' ? COLORS.primary : COLORS.white,
             textAlign:'right'
@@ -115,7 +217,7 @@ const TransferCreateScreen = ({ navigation }) => {
             padding:10,
             backgroundColor:COLORS.white,
             borderRadius:5,
-            paddingVertical:10,
+            paddingVertical:5,
             borderWidth:1,
             borderColor: activeInput == 'operator' ? COLORS.primary : COLORS.white,
           }} />
@@ -143,11 +245,121 @@ const TransferCreateScreen = ({ navigation }) => {
           style={{width:'100%',borderRadius:5,height:150,marginBottom:10}}
           />
         </TouchableOpacity>
-        }
+      }
 
       <Button handleOnPress={handleOnPress} label={'Add'} 
         isPrimary={true} style={{marginVertical:20,paddingVertical:10,marginBottom:20}}/>
       <View style={{ height: 50 }}></View>
+
+
+           {/* from user modal */}
+  <Modal transparent visible={fromVisible}>
+    <View style={styles.modalBackground}>
+      <View style={{...styles.modalContainer,width:'95%',height:'100%'}}>
+        <View style={{alignItems:'center'}}>
+          <TouchableOpacity style={styles.modalHeader} onPress={fromVisibleToggle}>
+            <Entypo name='circle-with-cross' size={30} color={COLORS.black} />
+          </TouchableOpacity>
+              <View style={{ width: '100%', alignContent: 'center' }}>
+                {users.map(((user,i) => {
+                  return (
+                    <TouchableOpacity key={i} style={styles.userItemContainer} onPress={() => selectFromuser(user)}>
+                  <View style={styles.userItemImage}>
+                {
+                    user.imageUri ?
+                            <Image resizeMode='stretch' style={styles.userImage} source={{ uri: user.imageUri }} />
+                        :
+                            <Image style={styles.userImage} source={images('user')} resizeMode="stretch" />
+                }
+              <Text style={styles.userItemName}>{ user.name}</Text>
+              </View>
+              <View style={styles.userItemWapper}>
+                    <Text style={styles.userItemAmount}>{user.amount} Kyats</Text>
+                    <View style={styles.userItemAccountText}>
+                    <Text style={{color:COLORS.black}}>Account</Text>
+                    <Text style={{color:COLORS.black}}>        : {user.account}</Text>
+                    </View>
+                    <View style={styles.userItemAccountText}>
+                  <Text style={{color:COLORS.black}}>Account No</Text>
+                  <Text style={{color:COLORS.black}}>  : {user.accountNo}</Text>
+              </View>
+              </View>
+            </TouchableOpacity>
+                  )
+                }))}
+          </View>
+        </View>
+      </View>
+        </View>
+        {loading&&<Apploder/>}
+      </Modal>
+      
+      {/* to modal */}
+  <Modal transparent visible={toVisible}>
+    <View style={styles.modalBackground}>
+      <View style={styles.modalContainer}>
+        <View style={{alignItems:'center'}}>
+          <TouchableOpacity style={styles.modalHeader} onPress={toVisibleToggle}>
+            <Entypo name='circle-with-cross' size={30} color={COLORS.black} />
+          </TouchableOpacity>
+
+          <View style={styles.modalIconWapper}>
+            <TouchableOpacity onPress={()=>selectCostomer('kbzpay')}>
+              <Image style={styles.image} source={images('kbzpay')} resizeMode="contain"/>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={()=>selectCostomer('wave')}>
+              <Image style={styles.image} source={images('wave')} resizeMode="contain"/>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={()=>selectCostomer('cbpay')}>
+              <Image style={styles.image} source={images('cbpay')} resizeMode="contain"/>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={()=>selectCostomer('cbbank')}>
+              <Image style={styles.image} source={images('cbbank')} resizeMode="contain"/>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.modalIconWapper}>
+            <TouchableOpacity onPress={()=>selectCostomer('okdollor')}>
+              <Image style={styles.image} source={images('okdollor')} resizeMode="contain"/>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={()=>selectCostomer('ayapay')}>
+              <Image style={styles.image} source={images('ayapay')} resizeMode="contain"/>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={()=>selectCostomer('ayabank')}>
+              <Image style={styles.image} source={images('ayabank')} resizeMode="contain"/>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={()=>selectCostomer('abank')}>
+              <Image style={styles.image} source={images('abank')} resizeMode="contain"/>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.modalIconWapper}>
+            <TouchableOpacity onPress={()=>selectCostomer('mab')}>
+              <Image style={styles.image} source={images('mab')} resizeMode="contain"/>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={()=>selectCostomer('mpitesan')}>
+              <Image style={styles.image} source={images('mpitesan')} resizeMode="contain"/>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={()=>selectCostomer('onepay')}>
+              <Image style={styles.image} source={images('onepay')} resizeMode="contain"/>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={()=>selectCostomer('truemoney')}>
+              <Image style={styles.image} source={images('truemoney')} resizeMode="contain"/>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.modalIconWapper}>
+            <TouchableOpacity onPress={()=>selectCostomer('uabpay')}>
+              <Image style={styles.image} source={images('uabpay')} resizeMode="contain"/>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={()=>selectCostomer('yoma')}>
+              <Image style={styles.image} source={images('yoma')} resizeMode="contain"/>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={()=>selectCostomer('user')}>
+              <Image style={styles.image} source={images('user')} resizeMode="contain"/>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+    </View>
+  </Modal>
       
       {/* cradic or paid modal */}
   <Modal transparent visible={cradicVisible}>
@@ -169,7 +381,7 @@ const TransferCreateScreen = ({ navigation }) => {
         </View>
       </View>
     </View>
-      </Modal>
+  </Modal>
 
     {/* option modal */}
   <Modal transparent visible={optionVisible}>
@@ -180,11 +392,17 @@ const TransferCreateScreen = ({ navigation }) => {
             <Entypo name='circle-with-cross' size={30} color={COLORS.black} />
           </TouchableOpacity>
           <View style={{width:'100%',alignContent:'center'}}>
-            <TouchableOpacity style={styles.optionItem} onPress={()=>selectOption('OptionOne')}>
-              <Text style={{color:COLORS.black}}>Option One</Text>
+            <TouchableOpacity style={styles.optionItem} onPress={()=>selectOption('Cash In')}>
+              <Text style={{color:COLORS.black}}>Cash In</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.optionItem} onPress={()=>selectOption('OptionTwo')}>
-              <Text style={{color:COLORS.black}}>Option Two</Text>
+            <TouchableOpacity style={styles.optionItem} onPress={()=>selectOption('Cash Out')}>
+              <Text style={{color:COLORS.black}}>Cash Out</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.optionItem} onPress={()=>selectOption('Transfer Money')}>
+              <Text style={{color:COLORS.black}}>Transfer Money</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.optionItem} onPress={()=>selectOption('Top Up')}>
+              <Text style={{color:COLORS.black}}>Top Up</Text>
             </TouchableOpacity>
           </View>
           
@@ -192,7 +410,6 @@ const TransferCreateScreen = ({ navigation }) => {
       </View>
     </View>
       </Modal>
-      {loading==false&&<Apploder/>}
     </ScrollView>
   )
 }
@@ -214,10 +431,10 @@ const styles = StyleSheet.create({
     color:COLORS.black,
   },
   formGroup:{
-    marginBottom:20
+    marginBottom:20,
   },
   formLabel:{
-    fontSize:18,
+    fontSize:15,
     opacity:0.5,
     marginBottom:5,
     color:COLORS.black,
@@ -230,7 +447,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderWidth: 1,
     borderColor: COLORS.white,
-    height:50
+    height:40
   },
   optionItem: {
     color:COLORS.black,
@@ -240,16 +457,25 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderWidth: 1,
     borderColor: COLORS.lightGray,
-    height: 50,
+    height: 40,
     width: '100%',
     justifyContent: 'center',
     marginVertical:2
+  },
+  userItem: {
+    color:COLORS.black,
+    backgroundColor: COLORS.lightGray,
+    paddingVertical: 10,
+    justifyContent: 'center',
+    width: 50,
+    height:50,
+    borderRadius:50,
   },
   modalBackground:{
     flex:1,
     backgroundColor:'rgba(0,0,0,0.5)',
     justifyContent:'center',
-    alignItems:'center'
+    alignItems:'center',
   },
   modalContainer:{
     width:'80%',
@@ -275,5 +501,69 @@ const styles = StyleSheet.create({
   formImageText:{
     color:COLORS.black,
     fontSize:15
-  }
+  },
+  userItemContainer: {
+    alignItems:'center',
+    justifyContent:'space-between',
+    flexDirection:'row',
+    marginBottom:20,
+    borderRadius:10,
+    shadowColor:COLORS.black,
+    shadowOffset:{
+      width:0,
+      height:10,
+    },
+    shadowOpacity:0.3,
+    shadowRadius:20,
+    padding: 10,
+    backgroundColor: COLORS.lightGray,
+    color:COLORS.black,
+    borderWidth: 1,
+    borderColor: COLORS.lightGray,
+    
+  },
+  userItemWapper: {
+    flex: 3,
+    justifyContent: 'center',
+    alignItems:'center',
+  },
+  userItemImage: {
+    flex: 2,
+    justifyContent: 'center',
+    alignItems:'center'
+  },
+  userItemName: {
+    fontSize: 14,
+    padding: 10,
+    color:COLORS.black
+  },
+  userItemAmount: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginVertical: 10,
+    color:COLORS.black
+  },
+  userItemAccountText: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    width: '100%',
+    marginHorizontal: 5,
+    color: COLORS.black,
+    fontSize:12,
+  },
+  userImage: {
+    width:50,
+    height:50,
+    borderRadius:50,
+    margin:10,
+  },
+  modalIconWapper:{
+    flexDirection:'row',
+  },
+  image:{
+    width:50,
+    height:50,
+    borderRadius:15,
+    margin:10,
+  },
 })

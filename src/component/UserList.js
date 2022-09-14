@@ -3,7 +3,7 @@ import React from 'react'
 import { images } from '../contacts/images'
 import { COLORS } from '../contacts/thems';
 
-const UserList = ({ item, navigation,children }) => {
+const UserList = ({ item, navigation,children,status }) => {
     const handleOnPress = (id) => {
         navigation.navigate('UserEditScreen',{id:id})
     }
@@ -35,11 +35,11 @@ const UserList = ({ item, navigation,children }) => {
         }
           
           <View style={styles.wapper}>
-              {children === undefined ?
-                  <Text style={styles.amount}>{item.amount} Kyats</Text> :
-                  <Text style={styles.amount}>{item.amount>0 &&'+'}{ item.amount } Kyats</Text>
-            }
-              
+              {status ? <Text style={styles.amount}>{item.amount > 0 && '+'}
+                  {item.amount} Kyats</Text>
+                  :
+                  <Text style={styles.amount}>{item.amount} Kyats</Text>
+              }              
               <View style={styles.accountText}>
                   <Text style={{color:COLORS.black}}>Account</Text>
                   <Text style={{color:COLORS.black}}>        : {item.account}</Text>
