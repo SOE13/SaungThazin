@@ -179,7 +179,7 @@ const TransferCreateScreen = ({ navigation }) => {
       <View style={{...styles.formGroup,flex:1,flexDirection:'row'}}>
         <View style={{ flex: 1, paddingHorizontal: 10 }}>
           {Object.keys(formUser).length === 0 ? <Text style={styles.formLabel}>User</Text> :
-            <Text style={styles.formLabel}>{ formUser.account}</Text>}
+            <Text style={styles.formLabel}>{ formUser.account.length>7?formUser.account.slice(0,7)+'...':formUser.account}</Text>}
           {Object.keys(formUser).length===0 ? <TouchableOpacity onPress={fromVisibleToggle} >
               <Image style={styles.userItem} source={images('user')} resizeMode="stretch" />
           </TouchableOpacity>: 
@@ -411,6 +411,9 @@ const TransferCreateScreen = ({ navigation }) => {
             </TouchableOpacity>
             <TouchableOpacity onPress={()=>selectCostomer('cash')}>
               <Image style={styles.image} source={images('cash')} resizeMode="contain"/>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={()=>selectCostomer('topUp')}>
+              <Image style={styles.image} source={images('topUp')} resizeMode="contain"/>
             </TouchableOpacity>
           </View>
         </View>

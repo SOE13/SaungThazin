@@ -2,22 +2,27 @@ import { FlatList, SafeAreaView, StyleSheet } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { COLORS } from '../contacts/thems'
 import Header from '../component/Header'
-import Ionicons from 'react-native-vector-icons/Ionicons'
-import UserList from '../component/UserList'
 import NoData from '../component/NoData';
 import Apploder from '../component/Apploder'
 import firestore from '@react-native-firebase/firestore'
+import Ionicons from 'react-native-vector-icons/Ionicons'
+import AntDesign from 'react-native-vector-icons/AntDesign'
+import DateTimePicker from '@react-native-community/datetimepicker';
+import Cradic from '../component/Cradic';
 
-const UserListScreen = ({ navigation }) => {
+const CradicList = ({navigation}) => {
+    const [data, setData] = useState([])
+    const [loading, setLoading] = useState(false)
+    const [refreshing, setRefreshing] = useState(false)
 
-  const [data, setData] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [refreshing, setRefreshing] = useState(false)
+    const [date, setDate] = useState(new Date());
+    const [show, setShow] = useState(false)
+    
 
-  const getAllUsers = async() => {
+     const getAllUsers = async() => {
     setLoading(true)
     setRefreshing(true)
-    firestore().collection('user').where('deleted','==',false)
+    firestore().collection('cradic').orderBy('date','desc')
       .get().then((querySnapshot) => {
           let temp=[]
           querySnapshot.forEach((doc) => {
@@ -32,35 +37,32 @@ const UserListScreen = ({ navigation }) => {
   useEffect(() => {
     getAllUsers()
   },[])
-
   return (
-     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.backgroung }}>
-      <Header title='User Lists'>
-        <Ionicons name="md-list-outline" size={25} style={styles.icon} onPress={() => {navigation.navigate('UserAmountUpdateList')}} />
-        <Ionicons name="person-add" size={25} style={styles.icon} onPress={() => {navigation.navigate('UserCreateScreen')}} />
-      </Header>
+    <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.backgroung }}>
+       <Header title='Cradic List'>
+        <Ionicons name="md-list-outline" size={25} style={styles.icon} onPress={()=>navigation.navigate('TransferCreateScreen')} />
+       </Header>
       {data.length==0&&<NoData/>}
-      {loading&&<Apploder/>}
+      {loading && <Apploder />}
+          
       <FlatList
         data={data}
         onRefresh={getAllUsers}
         refreshing={refreshing}
         keyExtractor={item=>item.id}
-        renderItem={({item})=><UserList navigation={navigation} item={item}/>}
+        renderItem={({item})=><Cradic navigation={navigation} item={item}/>}
         contentContainerStyle={{padding:20}}
       />
-
     </SafeAreaView>
   )
 }
 
-export default UserListScreen
+export default CradicList
 
 const styles = StyleSheet.create({
-  icon:{
+    icon:{
     marginRight:10,
     marginLeft:10,
     color:COLORS.white,
   }
-  
 })

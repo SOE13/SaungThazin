@@ -22,7 +22,7 @@ export const addNewTransition = (description,option,formUser,fromAmount,customer
     return firestore().collection('transition').add({
         description, option, formUser, fromAmount, customer,
         toAmount, profit, operator, imageUri, date: firestore.FieldValue.serverTimestamp(),
-        day,month,year,time
+        day,month,year,time,status:false
     }).then(() => {
         cradic&&cradicAdd(description,option,customer,toAmount,profit,operator)
         if (option === 'Cash Out') {

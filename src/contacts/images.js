@@ -31,6 +31,8 @@ export const images=(image)=>{
         return require('../../img/user.png')
     }else if(image==='cash'){
         return require('../../img/cash.png')
+    }else if(image==='topUp'){
+        return require('../../img/topUp.png')
     }else{
         return require('../../img/all.png')
     }

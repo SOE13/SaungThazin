@@ -7,8 +7,10 @@ import UserCreateScreen from "./UserCreateScreen"
 import TransferCreateScreen from "./TransferCreateScreen"
 import UserEditScreen from './UserEditScreen'
 import UserAmountUpdateList from "./UserAmountUpdateList"
+import CradicList from "./CradicList"
 
 export {
     HomeScreen, DailyScreen, MonthlyScreen, YearlyScreen, UserListScreen,
-    UserCreateScreen,TransferCreateScreen,UserEditScreen,UserAmountUpdateList
+    UserCreateScreen, TransferCreateScreen, UserEditScreen, UserAmountUpdateList,
+    CradicList
 }

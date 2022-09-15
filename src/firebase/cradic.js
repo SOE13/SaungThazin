@@ -4,7 +4,7 @@ export const cradicAdd = (description, option, customer, toAmount, profit, opera
     const date = new Date();
     const tempMonth = ["Jan","Feb","Mar","Apr","May","Jun"
     ,"Jul","Aug","Sep","Oct","Nov","Dec"];
-    let day = date.getDate();
+    let day = date.getDate(); 
     let month = tempMonth[date.getMonth()];
     let year = date.getFullYear();
     function formatAMPM(date) {

@@ -102,7 +102,7 @@ const UserEditScreen = ({ navigation, route }) => {
           <View style={{flexDirection:'row'}}>
               <TouchableOpacity onPress={deleteHandle}
                   style={{
-                      ...styles.buttom, backgroundColor: '#ab0303',
+                      ...styles.buttom, backgroundColor: '#cc3300',
                       borderColor: '#ab0303', marginRight: 20
                   }}>
                   <Text style={{fontSize:16,fontWeight:'bold',color:'#fff'}}>Delete</Text>
