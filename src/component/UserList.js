@@ -10,7 +10,7 @@ const UserList = ({ item, navigation,children,status }) => {
   return (
       <View style={styles.item}>
           {children === undefined ?
-              <View style={styles.userImage}>
+              <View style={styles.userImage}> 
                 {
                     item.imageUri ?
                         <TouchableOpacity onPress={()=>handleOnPress(item.id)} >

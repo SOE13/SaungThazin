@@ -50,7 +50,7 @@ const CradicList = ({navigation}) => {
         onRefresh={getAllUsers}
         refreshing={refreshing}
         keyExtractor={item=>item.id}
-        renderItem={({item})=><Cradic navigation={navigation} item={item}/>}
+        renderItem={({item})=><Cradic action={getAllUsers} item={item}/>}
         contentContainerStyle={{padding:20}}
       />
     </SafeAreaView>
