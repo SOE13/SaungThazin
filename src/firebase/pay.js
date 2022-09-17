@@ -19,7 +19,7 @@ export const addPay = (item, pay) => {
     }
     const time = formatAMPM(date)
     return firestore().collection('pay').add({
-       item,day,month,year,time, date: firestore.FieldValue.serverTimestamp(),
+       pay,item,day,month,year,time, date: firestore.FieldValue.serverTimestamp(),
     }).then(() => {
        firestore()
         .collection('cradic')
@@ -47,7 +47,7 @@ export const addPayAll = (item) => {
     }
     const time = formatAMPM(date)
     return firestore().collection('pay').add({
-       item,day,month,year,time, date: firestore.FieldValue.serverTimestamp(),
+       pay,item,day,month,year,time, date: firestore.FieldValue.serverTimestamp(),
     }).then(() => {
        firestore()
         .collection('cradic')

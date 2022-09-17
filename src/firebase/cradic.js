@@ -1,6 +1,6 @@
 import firestore from '@react-native-firebase/firestore'
 
-export const cradicAdd = (description, option, customer, toAmount, profit, operator) => {
+export const cradicAdd = (checkId,description, option, customer, toAmount, profit, operator) => {
     const date = new Date();
     const tempMonth = ["Jan","Feb","Mar","Apr","May","Jun"
     ,"Jul","Aug","Sep","Oct","Nov","Dec"];
@@ -20,14 +20,14 @@ export const cradicAdd = (description, option, customer, toAmount, profit, opera
     const time = formatAMPM(date)
     if (option === 'Top Up') {
         let cradicAmount = toAmount
-        return firestore().collection('cradic').add({
+        return firestore().collection('cradic').doc(checkId).set({
         description, option, customer,cradicAmount,
         operator, date: firestore.FieldValue.serverTimestamp(),
         day,month,year,time
     })
     } else {
         let cradicAmount = parseInt(toAmount)+parseInt(profit)
-        return firestore().collection('cradic').add({
+        return firestore().collection('cradic').doc(checkId).set({
         description, option, customer,cradicAmount,
         operator, date: firestore.FieldValue.serverTimestamp(),
         day,month,year,time

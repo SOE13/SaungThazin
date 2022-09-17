@@ -23,8 +23,11 @@ export const addNewTransition = (description,option,formUser,fromAmount,customer
         description, option, formUser, fromAmount, customer,
         toAmount, profit, operator, imageUri, date: firestore.FieldValue.serverTimestamp(),
         day,month,year,time,status:false
-    }).then(() => {
-        cradic&&cradicAdd(description,option,customer,toAmount,profit,operator)
+    }).then((data) => {
+        dailyProfit(day,month,year,formUser,profit)
+        monthlyProfit(month,year,formUser,profit)
+        yearlyProfit(year, formUser, profit)
+        cradic&&cradicAdd(data._documentPath._parts[1],description,option,customer,toAmount,profit,operator)
         if (option === 'Cash Out') {
             let amount=parseInt(formUser.amount)+parseInt(toAmount)
             firestore()
@@ -39,5 +42,62 @@ export const addNewTransition = (description,option,formUser,fromAmount,customer
                 .update({ amount })
         }
     })
+}
+
+const yearlyProfit = async (year, formUser, profit) => {
+    console.log(formUser.accountNo)
+    firestore()
+        .collection('yearlyProfit')
+        .where('year', '==', year).where('formUserId','==',formUser.accountNo).get()
+        .then((querySnapshot) => {
+            if (querySnapshot._changes.length==0) {
+                firestore().collection('yearlyProfit').add({formUserId:formUser.accountNo,formUser,profit,year,createdAt: firestore.FieldValue.serverTimestamp()})
+            } else {
+                 let temp = {}
+                querySnapshot.forEach((doc) => {
+                temp = { id: doc.id, ...doc.data() }
+                })   
+                let total = parseInt(temp.profit)+parseInt(profit)
+                firestore().collection('yearlyProfit').doc(temp.id).update({profit:total})
+                }
+            })
+}
+
+const monthlyProfit = async (month,year, formUser, profit) => {
+    console.log(formUser.accountNo)
+    firestore()
+        .collection('monthlyProfit').where('month','==',month)
+        .where('year', '==', year).where('formUserId','==',formUser.accountNo).get()
+        .then((querySnapshot) => {
+            if (querySnapshot._changes.length==0) {
+                firestore().collection('monthlyProfit').add({formUserId:formUser.accountNo,formUser,profit,month,year,createdAt: firestore.FieldValue.serverTimestamp()})
+            } else {
+                 let temp = {}
+                querySnapshot.forEach((doc) => {
+                temp = { id: doc.id, ...doc.data() }
+                })   
+                let total = parseInt(temp.profit)+parseInt(profit)
+                firestore().collection('monthlyProfit').doc(temp.id).update({profit:total})
+                }
+            })
+}
+
+const dailyProfit = async (day,month,year,formUser, profit) => {
+    console.log(formUser.accountNo)
+    firestore()
+        .collection('dailyProfit').where('day','==',day).where('month','==',month)
+        .where('year', '==', year).where('formUserId','==',formUser.accountNo).get()
+        .then((querySnapshot) => {
+            if (querySnapshot._changes.length==0) {
+                firestore().collection('dailyProfit').add({formUserId:formUser.accountNo,formUser,profit,day,month,year,createdAt: firestore.FieldValue.serverTimestamp()})
+            } else {
+                 let temp = {}
+                querySnapshot.forEach((doc) => {
+                temp = { id: doc.id, ...doc.data() }
+                })   
+                let total = parseInt(temp.profit)+parseInt(profit)
+                firestore().collection('dailyProfit').doc(temp.id).update({profit:total})
+                }
+            })
 }
 

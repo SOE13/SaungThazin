@@ -6,17 +6,12 @@ import NoData from '../component/NoData';
 import Apploder from '../component/Apploder'
 import firestore from '@react-native-firebase/firestore'
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import AntDesign from 'react-native-vector-icons/AntDesign'
-import DateTimePicker from '@react-native-community/datetimepicker';
 import Cradic from '../component/Cradic';
 
 const CradicList = ({navigation}) => {
     const [data, setData] = useState([])
     const [loading, setLoading] = useState(false)
     const [refreshing, setRefreshing] = useState(false)
-
-    const [date, setDate] = useState(new Date());
-    const [show, setShow] = useState(false)
     
 
      const getAllUsers = async() => {
@@ -40,7 +35,7 @@ const CradicList = ({navigation}) => {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.backgroung }}>
        <Header title='Cradic List'>
-        <Ionicons name="md-list-outline" size={25} style={styles.icon} onPress={()=>navigation.navigate('TransferCreateScreen')} />
+        <Ionicons name="md-list-outline" size={25} style={styles.icon} onPress={()=>navigation.navigate('PaymentListScreen')} />
        </Header>
       {data.length==0&&<NoData/>}
       {loading && <Apploder />}

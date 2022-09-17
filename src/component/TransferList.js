@@ -25,6 +25,7 @@ const TransferList = ({ item ,onPressHandle}) => {
             .collection('transition')
             .doc(item.id)
             .update({ status: true })
+        firestore().collection('cradic').doc(item.id).delete()
         firestore()
             .collection('user')
                     .doc(item.formUser.id)
