@@ -47,7 +47,7 @@ const HomeScreen = ({navigation}) => {
   const getAllTransfer = async() => {
     setLoading(true)
     setRefreshing(true)
-    firestore().collection('transition').orderBy('date', 'desc').limit(15)
+    firestore().collection('transition').orderBy('date', 'desc').limit(8)
       .get().then((querySnapshot) => {
           let temp=[]
           querySnapshot.forEach((doc) => {

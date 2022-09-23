@@ -5,15 +5,16 @@ import { images } from '../contacts/images'
 import Entypo from 'react-native-vector-icons/Entypo'
 import { addPay,addPayAll } from '../firebase/pay'
 
-const Cradic = ({ item,action }) => {
+const Cradic = ({ item,fun}) => {
   const [visible, setVisible] = useState(false)
   const [pay, setPay] = useState('')
   const handleOnPress = () => {
-    addPay(item, pay)
-    setVisible(false)
+    addPay(item, pay);
+    setVisible(false);
+    fun();
   }
   const deleteHandle = () => {
-    addPayAll(item,pay)
+    addPayAll(item,item.cradicAmount)
     setVisible(false)
   }
   return (
@@ -38,8 +39,8 @@ const Cradic = ({ item,action }) => {
                   <Text style={{color:COLORS.black}}>          : {item.option}</Text>
               </View>
               <View style={styles.personWapper}>
-                  <Text style={{color:COLORS.black}}>Refund</Text>
-                  <Text style={{ color:COLORS.black }}>         :  </Text>
+                  <Text style={{color:COLORS.black}}>Description</Text>
+                  <Text style={{ color:COLORS.black }}>  :</Text>
                   <View style={styles.wapperText}>
             <Text style={{ color: COLORS.black }}>{ item.description}</Text>
                   </View>
