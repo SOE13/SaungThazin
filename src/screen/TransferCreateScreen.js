@@ -114,7 +114,8 @@ const TransferCreateScreen = ({ navigation }) => {
       setLoading(true)
     }
     } else {
-      if (formUser.amount > fromAmount) {
+      if (parseInt(formUser.amount) > parseInt(fromAmount)) {
+        console.log(formUser.amount);
       let imageUri = '';
       if (description !== '' && option !== '' && Object.keys(formUser).length !== 0 &&
     fromAmount!==0 && customer!=='' && toAmount!==0 &&operator!=='') {
@@ -138,7 +139,7 @@ const TransferCreateScreen = ({ navigation }) => {
       Alert.alert("","Please fill All field !",[{text: "Okay",},])
       setLoading(true)
     }
-    } else {
+      } else {
         Alert.alert("",'User Account does not have enoungt amount!',[{text: "Okay",},])
     }
     }

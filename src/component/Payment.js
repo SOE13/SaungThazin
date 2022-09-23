@@ -7,9 +7,7 @@ const Payment = ({ items }) => {
   return (
     <View style={styles.item}>
       <View style={styles.userImage}>
-         <TouchableOpacity onPress={()=>setVisible(true)} >
           <Image style={styles.image} source={images(items.item.customer)} resizeMode="stretch" />
-          </TouchableOpacity>
         <Text style={styles.name}>{ items.pay} Kyats</Text>
       </View>
       <View style={styles.wapper}>

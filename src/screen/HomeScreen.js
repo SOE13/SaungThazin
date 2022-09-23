@@ -47,7 +47,7 @@ const HomeScreen = ({navigation}) => {
   const getAllTransfer = async() => {
     setLoading(true)
     setRefreshing(true)
-    firestore().collection('transition').orderBy('date', 'desc').limit(20)
+    firestore().collection('transition').orderBy('date', 'desc').limit(15)
       .get().then((querySnapshot) => {
           let temp=[]
           querySnapshot.forEach((doc) => {
@@ -89,7 +89,7 @@ const HomeScreen = ({navigation}) => {
         onRefresh={getAllTransfer}
         refreshing={refreshing}
         keyExtractor={item=>Math.random()}
-        renderItem={({item})=><TransferList onPressHandle={getAllTransfer} item={item}/>}
+        renderItem={({item})=><TransferList onPressHandle={getAllTransfer} navigation={navigation} item={item}/>}
         contentContainerStyle={{padding:20}}
       />
 

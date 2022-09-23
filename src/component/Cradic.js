@@ -13,7 +13,7 @@ const Cradic = ({ item,action }) => {
     setVisible(false)
   }
   const deleteHandle = () => {
-    addPayAll(item)
+    addPayAll(item,pay)
     setVisible(false)
   }
   return (

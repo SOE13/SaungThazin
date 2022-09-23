@@ -28,7 +28,7 @@ export const addPay = (item, pay) => {
     })
 }
 
-export const addPayAll = (item) => {
+export const addPayAll = (item,pay) => {
     const date = new Date();
     const tempMonth = ["Jan","Feb","Mar","Apr","May","Jun"
     ,"Jul","Aug","Sep","Oct","Nov","Dec"];

@@ -13,12 +13,17 @@ function commify(n) {
   return numberPart.replace(thousands, ",") + (decimalPart ? "." + decimalPart : "");
 }
 
-const TransferList = ({ item ,onPressHandle}) => {
+const TransferList = ({ item ,navigation}) => {
     const onLongPressHandle = () => {
          Alert.alert('', 'Aue you sure to Refund?',
         [{text: "Cancel",},{text: "Ok",onPress: () => edit()},],{
              cancelable: true,
          })
+    }
+    const onPress = () => {
+        if (item.imageUri != "") {
+            navigation.navigate("ImageScreen",{url:item.imageUri})
+        }
     }
     const edit = () => {
         firestore()
@@ -47,6 +52,7 @@ const TransferList = ({ item ,onPressHandle}) => {
     }
     if (item.status) {
         return (
+            <TouchableWithoutFeedback onPress={onPress}>
     <View style={styles.item}>
         <View style={styles.personWapper}>
               <View style={styles.userImage}>
@@ -125,11 +131,12 @@ const TransferList = ({ item ,onPressHandle}) => {
                   </View>
               </View>   
           </View>
-    </View>
+                </View>
+                </TouchableWithoutFeedback>
   )
     } else {
         return (
-            <TouchableWithoutFeedback onLongPress={onLongPressHandle}>
+            <TouchableWithoutFeedback onPress={onPress} onLongPress={onLongPressHandle}>
                 <View style={styles.item}>
         <View style={styles.personWapper}>
               <View style={styles.userImage}>

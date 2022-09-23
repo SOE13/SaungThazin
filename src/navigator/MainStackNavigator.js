@@ -1,6 +1,6 @@
 import React from "react";
 import TabNavigator from "./TabNavigator";
-import { CradicList, PaymentList, TransferCreateScreen, UserAmountUpdateList, UserCreateScreen, UserEditScreen } from "../screen";
+import { CradicList, ImageScreen, PaymentList, TransferCreateScreen, UserAmountUpdateList, UserCreateScreen, UserEditScreen } from "../screen";
 import { createStackNavigator,TransitionPresets } from "@react-navigation/stack";
 
 const Stack=createStackNavigator();
@@ -19,6 +19,7 @@ const MainStackNavigator=({initialRoute="TabNavigatorScreen"})=>{
                 <Stack.Screen name="UserEditScreen" component={UserEditScreen} />
                 <Stack.Screen name="CradicListScreen" component={CradicList} />
                 <Stack.Screen name="PaymentListScreen" component={PaymentList} />
+                <Stack.Screen name="ImageScreen" component={ImageScreen} />
             </Stack.Group>
            
         </Stack.Navigator>
