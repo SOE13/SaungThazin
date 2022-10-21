@@ -17,13 +17,17 @@ const Profit = ({ item, children }) => {
                             <Image style={styles.image} source={images('user')} resizeMode="stretch" />
                        
                 }
-              <Text style={styles.name}>{ item.formUser.name}</Text>
+              <Text style={styles.name}>{ item.formUser.account}</Text>
           </View>
           <View style={styles.wapper}>
-                  <Text style={styles.amount}>{item.profit} Kyats</Text>           
+              {/* <Text style={styles.amount}>{item.profit} Kyats</Text>     */}
               <View style={styles.accountText}>
-                  <Text style={{color:COLORS.black}}>Account</Text>
-                  <Text style={{color:COLORS.black}}>        : {item.formUser.account}</Text>
+                  <Text style={{color:COLORS.black}}>Profit</Text>
+                  <Text style={{ color: COLORS.black }}>             : {item.profit}</Text>
+              </View>
+              <View style={styles.accountText}>
+                  <Text style={{color:COLORS.black}}>Agent Fees</Text>
+                  <Text style={{ color: COLORS.black }}>   : {item.profit}</Text>
               </View>
               <View style={styles.accountText}>
                   <Text style={{color:COLORS.black}}>Account No</Text>

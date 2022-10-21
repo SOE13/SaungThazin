@@ -99,7 +99,8 @@ const UserEditScreen = ({ navigation, route }) => {
             </View>
           </View>
           
-          <View style={{flexDirection:'row'}}>
+          <View style={{ flexDirection: 'row' }}>
+              {name !== "Counter" &&
               <TouchableOpacity onPress={deleteHandle}
                   style={{
                       ...styles.buttom, backgroundColor: '#cc3300',
@@ -107,6 +108,7 @@ const UserEditScreen = ({ navigation, route }) => {
                   }}>
                   <Text style={{fontSize:16,fontWeight:'bold',color:'#fff'}}>Delete</Text>
               </TouchableOpacity>
+              }
               <TouchableOpacity onPress={saveHandle}
                   style={{
                       ...styles.buttom, backgroundColor: COLORS.primary,

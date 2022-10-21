@@ -55,7 +55,8 @@ const HomeScreen = ({navigation}) => {
           })
           setData(temp)
           setLoading(false)
-      }, e => {console.log(e)})
+      }, e => { console.log(e) })
+    setLoading(false)
     setRefreshing(false)
   }
 

@@ -23,18 +23,28 @@ const TransferCreateScreen = ({ navigation }) => {
   const [description, setDescription] = useState('')
   const [option, setOption] = useState('')
   const [profit, setProfit] = useState(0)
+  const [agent, setAgent] = useState(0)
   const [operator, setOperator] = useState('')
   const [cradic, setCradic] = useState(false)
   const [formUser, setFromUser] = useState({})
   const [customer,setCustomer]=useState('')
   const[fromAmount,setFromAmount]=useState(0)
   const [toAmount, settoAmount] = useState(0)
+  const [counter,setCounter]=useState({})
   
-  const[imageUrl,setImageUrl]=useState('')
+  const [imageUrl, setImageUrl] = useState('')
+  
+  const getCounter = async () => {
+     firestore().collection('user').doc('ABC0123456789').get().then(documentSnapshot => {
+        if (documentSnapshot.exists) {
+          setCounter(documentSnapshot.data())
+        }
+         })
+  }
 
   const getAllUser = async () => {
      setLoading(true)
-    firestore().collection('user').where('deleted','==',false)
+    firestore().collection('user').where('deleted','==',false).where('account','!=','Counter')
       .get().then((querySnapshot) => {
           let temp=[]
           querySnapshot.forEach((doc) => {
@@ -47,6 +57,7 @@ const TransferCreateScreen = ({ navigation }) => {
   
 
   useEffect(() => {
+    getCounter()
     getAllUser()
   },[])
 
@@ -90,21 +101,22 @@ const TransferCreateScreen = ({ navigation }) => {
   const handleOnPress = async () => {
     setLoading(false)
     if (option === 'Cash Out') {
-      let imageUri = '';
+      if (parseInt(counter.amount)>parseInt(toAmount)) {
+        let imageUri = '';
       if (description !== '' && option !== '' && Object.keys(formUser).length !== 0 &&
-    fromAmount!==0 && customer!=='' && toAmount!==0 &&operator!=='') {
+    fromAmount!==0 && customer!=='' && toAmount!==0 &&operator!=='' &&  agent!==0) {
       if (imageUrl != "") {
         const reference = storage().ref('/images/transfer/'+customer+fromAmount.accountNo);
         await reference.putFile(imageUrl).then(()=>{
           console.log("image uploaded")
         })
         let uri=reference.getDownloadURL().then((downloadURL)=>{
-          addNewTransition(description,option,formUser,fromAmount,customer,toAmount,profit,operator,cradic,downloadURL)
+          addNewTransition(description,option,formUser,counter,fromAmount,customer,toAmount,profit,agent,operator,cradic,downloadURL)
           ToastAndroid.show("Done",ToastAndroid.SHORT)
           setLoading(true)
         })
       }else{
-        addNewTransition(description,option,formUser,fromAmount,customer,toAmount,profit,operator,cradic,imageUri)
+        addNewTransition(description,option,formUser,counter,fromAmount,customer,toAmount,profit,agent,operator,cradic,imageUri)
         ToastAndroid.show("Done",ToastAndroid.SHORT)
         setLoading(true)
       } 
@@ -113,24 +125,27 @@ const TransferCreateScreen = ({ navigation }) => {
       Alert.alert("","Please fill All field !",[{text: "Okay",},])
       setLoading(true)
     }
+      } else {
+        Alert.alert("",'Counter does not have enoungt amount!',[{text: "Okay",},])
+      }
+      
     } else {
       if (parseInt(formUser.amount) > parseInt(fromAmount)) {
-        console.log(formUser.amount);
       let imageUri = '';
       if (description !== '' && option !== '' && Object.keys(formUser).length !== 0 &&
-    fromAmount!==0 && customer!=='' && toAmount!==0 &&operator!=='') {
+    fromAmount!==0 && customer!=='' && toAmount!==0 &&operator!=='' &&  agent!==0) {
       if (imageUrl != "") {
         const reference = storage().ref('/images/transfer/'+customer+fromAmount.accountNo);
         await reference.putFile(imageUrl).then(()=>{
           console.log("image uploaded")
         })
         let uri=reference.getDownloadURL().then((downloadURL)=>{
-          addNewTransition(description,option,formUser,fromAmount,customer,toAmount,profit,operator,cradic,downloadURL)
+          addNewTransition(description,option,formUser,counter,fromAmount,customer,toAmount,profit,agent,operator,cradic,downloadURL)
           ToastAndroid.show("Done",ToastAndroid.SHORT)
           setLoading(true)
         })
       }else{
-        addNewTransition(description,option,formUser,fromAmount,customer,toAmount,profit,operator,cradic,imageUri)
+        addNewTransition(description,option,formUser,counter,fromAmount,customer,toAmount,profit,agent,operator,cradic,imageUri)
         ToastAndroid.show("Done",ToastAndroid.SHORT)
         setLoading(true)
       } 
@@ -258,6 +273,25 @@ const TransferCreateScreen = ({ navigation }) => {
             paddingVertical:5,
             borderWidth:1,
             borderColor: activeInput == 'profit' ? COLORS.primary : COLORS.white,
+            textAlign:'right'
+          }} />
+      </View>
+
+      <View style={styles.formGroup}>
+          <Text style={styles.formLabel}>Agent Fees</Text>
+          <TextInput onFocus={()=>setActiveInput('agent')}
+           value={agent}
+           keyboardType={'number-pad'}
+           placeholder='Profit'
+           onChangeText={(value)=>setAgent(value)}
+          style={{
+            color:COLORS.black,
+            padding:10,
+            backgroundColor:COLORS.white,
+            borderRadius:5,
+            paddingVertical:5,
+            borderWidth:1,
+            borderColor: activeInput == 'agent' ? COLORS.primary : COLORS.white,
             textAlign:'right'
           }} />
       </View>

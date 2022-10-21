@@ -1,6 +1,6 @@
 import firestore from '@react-native-firebase/firestore'
 import { cradicAdd } from './cradic';
-export const addNewTransition = (description,option,formUser,fromAmount,customer,toAmount,profit,operator,cradic,imageUri) => {
+export const addNewTransition = (description,option,formUser,counter,fromAmount,customer,toAmount,profit,agent,operator,cradic,imageUri) => {
     const date = new Date();
     const tempMonth = ["Jan","Feb","Mar","Apr","May","Jun"
     ,"Jul","Aug","Sep","Oct","Nov","Dec"];
@@ -19,9 +19,10 @@ export const addNewTransition = (description,option,formUser,fromAmount,customer
     }
     const time = formatAMPM(date)
 
+
     return firestore().collection('transition').add({
         description, option, formUser, fromAmount, customer,
-        toAmount, profit, operator, imageUri, date: firestore.FieldValue.serverTimestamp(),
+        toAmount, profit,agent, operator, imageUri, date: firestore.FieldValue.serverTimestamp(),
         day,month,year,time,status:false
     }).then((data) => {
         dailyProfit(day,month,year,formUser,profit)
@@ -29,23 +30,32 @@ export const addNewTransition = (description,option,formUser,fromAmount,customer
         yearlyProfit(year, formUser, profit)
         cradic&&cradicAdd(data._documentPath._parts[1],description,option,customer,toAmount,profit,operator)
         if (option === 'Cash Out') {
-            let amount=parseInt(formUser.amount)+parseInt(toAmount)
+            let countAmout=(parseInt(counter.amount)-parseInt(toAmount))+parseInt(profit)
+            let amount = parseInt(formUser.amount) + parseInt(toAmount) + parseInt(agent)
             firestore()
                 .collection('user')
                 .doc(formUser.id)
                 .update({ amount })
+             firestore()
+                .collection('user')
+                .doc("ABC0123456789")
+                .update({ amount:countAmout })
         } else {
-            let amount=parseInt(formUser.amount)-parseInt(toAmount)
+             let countAmout=parseInt(counter.amount)+parseInt(toAmount)+parseInt(profit)
+            let amount=(parseInt(formUser.amount)-parseInt(toAmount))+parseInt(agent)
             firestore()
                 .collection('user')
                 .doc(formUser.id)
                 .update({ amount })
+            firestore()
+                .collection('user')
+                .doc("ABC0123456789")
+                .update({amount: countAmout })
         }
     })
 }
 
 const yearlyProfit = async (year, formUser, profit) => {
-    console.log(formUser.accountNo)
     firestore()
         .collection('yearlyProfit')
         .where('year', '==', year).where('formUserId','==',formUser.accountNo).get()
@@ -64,7 +74,6 @@ const yearlyProfit = async (year, formUser, profit) => {
 }
 
 const monthlyProfit = async (month,year, formUser, profit) => {
-    console.log(formUser.accountNo)
     firestore()
         .collection('monthlyProfit').where('month','==',month)
         .where('year', '==', year).where('formUserId','==',formUser.accountNo).get()
@@ -83,7 +92,6 @@ const monthlyProfit = async (month,year, formUser, profit) => {
 }
 
 const dailyProfit = async (day,month,year,formUser, profit) => {
-    console.log(formUser.accountNo)
     firestore()
         .collection('dailyProfit').where('day','==',day).where('month','==',month)
         .where('year', '==', year).where('formUserId','==',formUser.accountNo).get()

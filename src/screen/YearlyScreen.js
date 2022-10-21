@@ -34,7 +34,7 @@ const YearlyScreen = () => {
   
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.backgroung }}>
-      <Header title='Yearly Profit' />
+      <Header title='Yearly' />
       
       {data.length==0&&<NoData/>}
       {loading && <Apploder />}

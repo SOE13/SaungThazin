@@ -13,7 +13,8 @@ function commify(n) {
   return numberPart.replace(thousands, ",") + (decimalPart ? "." + decimalPart : "");
 }
 
-const TransferList = ({ item ,navigation}) => {
+const TransferList = ({ item, navigation }) => {
+    console.log(item.agent)
     const onLongPressHandle = () => {
          Alert.alert('', 'Aue you sure to Refund?',
         [{text: "Cancel",},{text: "Ok",onPress: () => edit()},],{
@@ -109,6 +110,13 @@ const TransferList = ({ item ,navigation}) => {
                   </View>
               </View>
               <View style={styles.personWapper}>
+                  <Text style={{ fontSize: 13, color: COLORS.listText ,marginRight:75}}>Agent Fees</Text>
+                  <Text style={{ fontSize: 13, color: COLORS.listText }}>  :  </Text>
+                  <View style={styles.wapperText}>
+                      <Text style={{ fontSize: 13, color: COLORS.black }}>{commify(item.agent) + ' '}MMK</Text>
+                  </View>
+              </View>
+              <View style={styles.personWapper}>
                   <Text style={{ fontSize: 13, color: COLORS.listText ,marginRight:55}}>Operator</Text>
                   <Text style={{ fontSize: 13, color: COLORS.listText }}>  :  </Text>
                   <View style={styles.wapperText}>
@@ -190,6 +198,13 @@ const TransferList = ({ item ,navigation}) => {
                   <Text style={{ fontSize: 13, color: COLORS.listText }}>  :  </Text>
                   <View style={styles.wapperText}>
                       <Text style={{ fontSize: 13, color: COLORS.black }}>{commify(item.profit) + ' '}MMK</Text>
+                  </View>
+               </View>
+               <View style={styles.personWapper}>
+                  <Text style={{ fontSize: 13, color: COLORS.listText ,marginRight:45}}>Agent Fees</Text>
+                  <Text style={{ fontSize: 13, color: COLORS.listText }}> :  </Text>
+                  <View style={styles.wapperText}>
+                      <Text style={{ fontSize: 13, color: COLORS.black }}>{commify(item.agent) + ' '}MMK</Text>
                   </View>
               </View>
               <View style={styles.personWapper}>

@@ -60,7 +60,7 @@ function onChange(date) {
   
   return (
    <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.backgroung }}>
-       <Header title='Monthly Profit'>
+       <Header title='Monthly'>
         <Ionicons name="search" size={25} style={styles.icon} onPress={() => setShow(true)} />
       </Header>
       

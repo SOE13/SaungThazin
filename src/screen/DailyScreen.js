@@ -64,7 +64,7 @@ const DailyScreen = () => {
   
   return (
    <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.backgroung }}>
-      <Header title='Daily Profit'>
+      <Header title='Daily'>
         <Ionicons name="search" size={25} style={styles.icon} onPress={() => setShow(true)} />
       </Header>
 
